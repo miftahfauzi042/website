@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yayasan Pendidikan Pondok Pesantren Roudlotussolihin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient( 135deg, #1e3a2e 0%, #2d5a3d 50%, #f59e0b 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .pulse-green {
+            animation: pulseGreen 2s infinite;
+        }
+        
+        @keyframes pulseGreen {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+        }
+        
+        .admin-hidden {
+            display: none;
+        }
+        
+        .admin-mode .admin-hidden {
+            display: block;
+        }
+        
+        .admin-mode .admin-only {
+            display: inline-block;
+        }
+        
+        .admin-only {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <img src="ypp.png" alt="Logo" class="w-10 h-10 object-contain" />
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">
+                            Yayasan Pendidikan Pondok Pesantren Roudlotussolihin
+                        </h1>
+                        <p class="text-sm opacity-90">Pendidikan Islam Terpadu</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSection('home')" class="hover:text-yellow-300 transition-colors">
+              Beranda
+            </button>
+                    <button onclick="toggleSection('institutions')" class="hover:text-yellow-300 transition-colors">
+              Lembaga
+            </button>
+                    <button onclick="toggleSection('registration')" class="hover:text-yellow-300 transition-colors">
+              Pendaftaran
+            </button>
+                    <button onclick="showAdminLogin()" class="hover:text-yellow-300 transition-colors">
+              Admin
+            </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg p-6 w-full max-w-md">
+                <h3 class="text-lg font-bold mb-4">Login Admin</h3>
+                <input type="text" id="adminUsername" placeholder="Username" class="w-full p-3 border rounded-lg mb-3" />
+                <input type="password" id="adminPassword" placeholder="Password" class="w-full p-3 border rounded-lg mb-4" />
+                <div class="flex space-x-3">
+                    <button onclick="adminLogin()" class="flex-1 bg-green-800 text-white py-2 rounded-lg hover:bg-green-900">
+              Login
+            </button>
+                    <button onclick="closeAdminLogin()" class="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">
+              Batal
+            </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="homeSection" class="section-content">
+        <!-- Hero Section -->
+        <div class="gradient-bg text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl font-bold mb-6 fade-in">
+                    Yayasan Pendidikan Pondok Pesantren Roudlotussolihin
+                </h1>
+                <p class="text-xl mb-8 opacity-90 slide-in">
+                    Membentuk Generasi Qur'ani yang Berakhlak Mulia
+                </p>
+                <button onclick="toggleSection('registration')" class="bg-yellow-500 text-green-900 px-8 py-3 rounded-full font-semibold hover:bg-yellow-400 transition-colors pulse-green">
+            Daftar Sekarang
+          </button>
+            </div>
+        </div>
+
+        <!-- Vision & Mission -->
+        <div class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="card-hover bg-green-50 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold text-green-800 mb-4">Visi</h3>
+                        <p id="visionText" class="text-gray-700 leading-relaxed">
+                            Mengawal dan mencetak generasi bangsa yang beriman, berakhlakul karimah, cerdas dan berbudaya
+                        </p>
+                        <button onclick="editContent('visionText')" class="admin-only mt-3 text-sm bg-blue-500 text-white px-3 py-1 rounded">
+                Edit
+              </button>
+                    </div>
+                    <div class="card-hover bg-yellow-50 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold text-green-800 mb-4">Misi</h3>
+                        <div id="missionText" class="text-gray-700 leading-relaxed">
+                            <ul class="space-y-2">
+                                <li>• Melahirkan generasi penerus yang beriman dan berkualitas
+                                </li>
+                                <li>
+                                    • Mewujudkan keunggulan dalam pengembangan keislaman
+                                </li>
+                                <li>
+                                    • Meningkatkan sumberdaya pendidik dan kependidikan yang professional
+                                </li>
+                                <li>• Mewujudkan proses belajar mengajar yang berbasis keagamaan berkemajuan
+                                </li>
+                                <li>• Mewujudkan lingkungan pendidikan yang kreatif, edukatif, religious dan akuntabel
+                                </li>
+                                <li>• Mengembangkan seni budaya yang relevan dengan ciri khas pesantren menuju kebudayaan local, nasional dan internasional
+                                </li>
+                            </ul>
+                        </div>
+                        <button onclick="editContent('missionText')" class="admin-only mt-3 text-sm bg-blue-500 text-white px-3 py-1 rounded">
+                Edit
+              </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* Efek zoom halus pada foto */
+            
+            .photo-zoom img {
+                transition: transform 0.4s ease;
+            }
+            
+            .photo-zoom:hover img {
+                transform: scale(1.08);
+            }
+        </style>
+
+        <!-- Leadership Photos -->
+        <div class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center text-green-800 mb-12">
+                    Pimpinan Yayasan dan Lembaga
+                </h2>
+
+                <!-- Grid 3 kolom -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+
+                    <!-- Pendiri -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="founderPhoto" src="" alt="Pendiri" class="w-full h-full object-cover hidden" />
+                                <span id="founderInitial">PY</span>
+                                <input type="file" id="founderPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('founder', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Pendiri Yayasan</h4>
+                            <p class="text-base text-gray-600">KH. RM. Soleh Bajuri S.Hi, M.Hi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Ketua Yayasan -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="chairmanPhoto" src="" alt="Ketua" class="w-full h-full object-cover hidden" />
+                                <span id="chairmanInitial">KY</span>
+                                <input type="file" id="chairmanPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('chairman', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Ketua Yayasan</h4>
+                            <p class="text-base text-gray-600">Ust. M. Yusuf Zakaria</p>
+                        </div>
+                    </div>
+
+                    <!-- Kepala RA -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="raHeadPhoto" src="" alt="Kepala RA" class="w-full h-full object-cover hidden" />
+                                <span id="raHeadInitial">KR</span>
+                                <input type="file" id="raHeadPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('raHead', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Kepala Sekolah RA Alquran</h4>
+                            <p class="text-base text-gray-600">Ibu. Rina Wati Dewi. Str.Keb</p>
+                        </div>
+                    </div>
+
+                    <!-- Kepala MI -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="miHeadPhoto" src="" alt="Kepala MI" class="w-full h-full object-cover hidden" />
+                                <span id="miHeadInitial">KM</span>
+                                <input type="file" id="miHeadPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('miHead', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Kepala MI Maarif Bumirestu</h4>
+                            <p class="text-base text-gray-600">Bpk. Daldiri, S.Pdi</p>
+                        </div>
+                    </div>
+
+                    <!-- Kepala MTs -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="mtsHeadPhoto" src="" alt="Kepala MTs" class="w-full h-full object-cover hidden" />
+                                <span id="mtsHeadInitial">MT</span>
+                                <input type="file" id="mtsHeadPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('mtsHead', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Kepala MTs Maarif Bumirestu</h4>
+                            <p class="text-base text-gray-600">Bpk. Sudarmanto S.Pdi</p>
+                        </div>
+                    </div>
+
+                    <!-- Kepala SMA -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="smaHeadPhoto" src="" alt="Kepala SMA" class="w-full h-full object-cover hidden" />
+                                <span id="smaHeadInitial">KS</span>
+                                <input type="file" id="smaHeadPhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('smaHead', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Kepala SMA Maarif Bumirestu</h4>
+                            <p class="text-base text-gray-600">Bpk. Bahaudin S.Sos</p>
+                        </div>
+                    </div>
+
+                    <!-- Mudir 1 -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="mudir1Photo" src="" alt="Mudir 1" class="w-full h-full object-cover hidden" />
+                                <span id="mudir1Initial">M1</span>
+                                <input type="file" id="mudir1PhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('mudir1', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Mudir Am MUS Roudlotussolihin</h4>
+                            <p class="text-base text-gray-600">Ust. Ahmad Mustofa Zuhad</p>
+                        </div>
+                    </div>
+
+                    <!-- Mudir 2 -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="mudir2Photo" src="" alt="Mudir 2" class="w-full h-full object-cover hidden" />
+                                <span id="mudir2Initial">M2</span>
+                                <input type="file" id="mudir2PhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('mudir2', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Mudir Am MUS Roudlotussolihin Tahfidz</h4>
+                            <p class="text-base text-gray-600">Usth. Mufidatul Baroroh</p>
+                        </div>
+                    </div>
+
+                    <!-- Mudir 3 -->
+                    <div class="text-center card-hover flex flex-col h-full">
+                        <div class="flex-grow">
+                            <div class="w-48 aspect-[3/4] mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-white text-5xl font-bold relative overflow-hidden shadow-lg photo-zoom">
+                                <img id="mudir3Photo" src="" alt="Mudir 3" class="w-full h-full object-cover hidden" />
+                                <span id="mudir3Initial">M3</span>
+                                <input type="file" id="mudir3PhotoInput" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updatePhoto('mudir3', this)" />
+                            </div>
+                            <h4 class="font-semibold text-green-800 text-lg">Mudir Am MUS Roudlotul Muttaqin</h4>
+                            <p class="text-base text-gray-600">Ust. Musyaffa</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center card-hover p-6">
+                        <div class="w-16 h-16 bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                        </div>
+                        <h3 class="font-semibold text-green-800 mb-2">Alamat</h3>
+                        <p id="addressText" class="text-gray-600">
+                            Jl.KH. Sofyan Tsauri KM 18, Desa Bumirestu, Kecamatan Palas, Kabupaten Lampung Selatan, Provinsi Lampung, 35594
+                        </p>
+                        <button onclick="editContent('addressText')" class="admin-only mt-2 text-sm bg-blue-500 text-white px-3 py-1 rounded">
+                Edit
+              </button>
+                    </div>
+                    <div class="text-center card-hover p-6">
+                        <div class="w-16 h-16 bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+                  />
+                </svg>
+                        </div>
+                        <h3 class="font-semibold text-green-800 mb-2">Kontak</h3>
+                        <p class="text-gray-600">+62 821-8004-8861</p>
+                        <p class="text-gray-600">yppproudlotussolihin@gmail.com</p>
+                    </div>
+                    <div class="text-center card-hover p-6">
+                        <div class="w-16 h-16 bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                        </div>
+                        <h3 class="font-semibold text-green-800 mb-2">Media Sosial</h3>
+                        <div class="space-y-1">
+                            <p class="text-gray-600">Media Roudlotussolihin</p>
+                            <p class="text-gray-600">Facebook | Instagram | YouTube |Tiktok </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Gallery -->
+        <style>
+            /* Efek zoom halus pada foto */
+            
+            .photo-zoom img {
+                transition: transform 0.4s ease;
+            }
+            
+            .photo-zoom:hover img {
+                transform: scale(1.08);
+            }
+        </style>
+        <div class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center text-green-800 mb-12">
+                    Galeri Kegiatan
+                </h2>
+
+                <!-- Grid 2 kolom -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Foto 1 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery1" src="" alt="Kegiatan 1" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Haflah Ke 35
+                        </div>
+                        <input type="file" id="gallery1Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery1', this)" />
+                    </div>
+
+                    <!-- Foto 2 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery2" src="" alt="Kegiatan 2" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Santri Berprestasi
+                        </div>
+                        <input type="file" id="gallery2Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery2', this)" />
+                    </div>
+
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            MQKN
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Paskibra
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Upacara HSN
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Upacara HUT Kemerdekaan RI
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM RA Alquran Roudlotussolihin
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM MI Maarif Bumirestu
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM MTs Maarif Bumirestu
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM SMA Maarif Bumirestu
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM MUS Roudlotussolihin
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM MUS Roudlotussolihin Tahfid
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan KBM MUS Roudlotul Muttaqin
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                    <!-- Foto 3 -->
+                    <div class="aspect-[16/9] bg-gradient-to-br from-green-400 to-green-600 rounded-lg overflow-hidden relative group">
+                        <img id="gallery3" src="" alt="Kegiatan 3" class="w-full h-full object-contain bg-black transform transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm py-2 px-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            Kegiatan Sholat Dhuha Berjamaah
+                        </div>
+                        <input type="file" id="gallery3Input" class="admin-hidden absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="updateGallery('gallery3', this)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Institutions Section -->
+    <section id="institutionsSection" class="section-content hidden">
+        <div class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-12">
+                    Lembaga Pendidikan
+                </h2>
+
+                <!-- Institution Cards -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- RA Al-Quran -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            RA Al-Quran Roudlotussolihin
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="raProgram" class="text-gray-600">
+                                    Tahfidz Juz 30, Pembelajaran Berbasis Bermain, Pengembangan Motorik
+                                </p>
+                                <button onclick="editContent('raProgram')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Fasilitas:</strong>
+                                <p class="text-gray-600">
+                                    Ruang Kelas Ber-AC, Playground, Perpustakaan Mini
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Ekstrakurikuler:</strong>
+                                <p class="text-gray-600">Menggambar, Menyanyi, Olahraga</p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="raSchedule" class="text-gray-600">
+                                    Senin-Jumat: 07.30-11.00 WIB
+                                </p>
+                                <button onclick="editContent('raSchedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MI Maarif -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            MI Maarif Bumirestu
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="miProgram" class="text-gray-600">
+                                    Tahfidz Al-Quran, Bahasa Arab & Inggris, Sains Terapan
+                                </p>
+                                <button onclick="editContent('miProgram')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="miSubjects" class="text-gray-600">
+                                    Al-Quran Hadits, Akidah Akhlak, Fiqh, SKI, Bahasa Arab, Matematika, IPA, IPS, Bahasa Indonesia, Bahasa Inggris
+                                </p>
+                                <button onclick="editContent('miSubjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Ekstrakurikuler:</strong>
+                                <p class="text-gray-600">
+                                    Pramuka, Futsal, Kaligrafi, Komputer
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="miSchedule" class="text-gray-600">
+                                    Senin-Sabtu: 07.00-14.30 WIB
+                                </p>
+                                <button onclick="editContent('miSchedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MTs Maarif -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            MTs Maarif Bumirestu
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="mtsProgram" class="text-gray-600">
+                                    Tahfidz Al-Quran, Olimpiade Sains, Bahasa Arab Intensif
+                                </p>
+                                <button onclick="editContent('mtsProgram')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="mtsSubjects" class="text-gray-600">
+                                    Al-Quran Hadits, Akidah Akhlak, Fiqh, SKI, Bahasa Arab, Matematika, IPA, IPS, Bahasa Indonesia, Bahasa Inggris, Seni Budaya, PJOK
+                                </p>
+                                <button onclick="editContent('mtsSubjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Ekstrakurikuler:</strong>
+                                <p class="text-gray-600">
+                                    OSIS, PMR, Basket, Volly, Kaligrafi, Jurnalistik
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="mtsSchedule" class="text-gray-600">
+                                    Senin-Sabtu: 07.00-15.30 WIB
+                                </p>
+                                <button onclick="editContent('mtsSchedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SMA Maarif -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            SMA Maarif Bumirestu
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="smaProgram" class="text-gray-600">
+                                    Kelas Unggulan IPA/IPS, Persiapan UTBK, Bahasa Arab & Inggris
+                                </p>
+                                <button onclick="editContent('smaProgram')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="smaSubjects" class="text-gray-600">
+                                    Al-Quran Hadits, Akidah Akhlak, Fiqh, SKI, Bahasa Arab, Matematika, Fisika, Kimia, Biologi, Sejarah, Geografi, Ekonomi, Sosiologi, Bahasa Indonesia, Bahasa Inggris
+                                </p>
+                                <button onclick="editContent('smaSubjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Ekstrakurikuler:</strong>
+                                <p class="text-gray-600">
+                                    OSIS, Rohis, KIR, Debat, Teater, Band
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="smaSchedule" class="text-gray-600">
+                                    Senin-Sabtu: 07.00-16.00 WIB
+                                </p>
+                                <button onclick="editContent('smaSchedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pondok Pesantren MUS Roudlotussolihin -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            Pondok Pesantren MUS Roudlotussolihin
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="mus1Program" class="text-gray-600">
+                                    Kajian Kitab Kuning, Tahfidz Al-Quran, Bahasa Arab Intensif
+                                </p>
+                                <button onclick="editContent('mus1Program')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="mus1Subjects" class="text-gray-600">
+                                    Tafsir, Hadits, Fiqh, Ushul Fiqh, Nahwu, Shorof, Balaghah, Mantiq, Akhlak, Tasawuf
+                                </p>
+                                <button onclick="editContent('mus1Subjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Kegiatan:</strong>
+                                <p class="text-gray-600">
+                                    Muhadhoroh, Bahtsul Masail, Rihlah Ilmiyah
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="mus1Schedule" class="text-gray-600">
+                                    24 Jam (Mukim), Kajian: Ba'da Maghrib & Subuh
+                                </p>
+                                <button onclick="editContent('mus1Schedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pondok Pesantren MUS Roudlotussolihin Tahfidz -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            Pondok Pesantren MUS Roudlotussolihin Tahfidz
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="mus2Program" class="text-gray-600">
+                                    Tahfidz 30 Juz, Tilawah, Tahsin Al-Quran
+                                </p>
+                                <button onclick="editContent('mus2Program')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="mus2Subjects" class="text-gray-600">
+                                    Tahfidz Al-Quran, Tajwid, Qiroah, Tafsir, Hadits, Fiqh, Bahasa Arab
+                                </p>
+                                <button onclick="editContent('mus2Subjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Kegiatan:</strong>
+                                <p class="text-gray-600">
+                                    Setoran Hafalan, Muroja'ah, Musabaqah
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="mus2Schedule" class="text-gray-600">
+                                    24 Jam (Mukim), Setoran: 05.00-06.00 & 15.00-17.00
+                                </p>
+                                <button onclick="editContent('mus2Schedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pondok Pesantren MUS Roudlotul Muttaqin -->
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-lg border border-green-200">
+                        <h3 class="text-xl font-bold text-green-800 mb-4">
+                            Pondok Pesantren MUS Roudlotul Muttaqin
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div>
+                                <strong>Program Unggulan:</strong>
+                                <p id="mus3Program" class="text-gray-600">
+                                    Takhassus Fiqh, Dakwah, Kewirausahaan Islami
+                                </p>
+                                <button onclick="editContent('mus3Program')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Mata Pelajaran:</strong>
+                                <p id="mus3Subjects" class="text-gray-600">
+                                    Fiqh Muamalah, Ushul Fiqh, Hadits, Tafsir, Dakwah, Manajemen, Kewirausahaan
+                                </p>
+                                <button onclick="editContent('mus3Subjects')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                            <div>
+                                <strong>Kegiatan:</strong>
+                                <p class="text-gray-600">
+                                    Praktik Dakwah, Koperasi Santri, Pelatihan Bisnis
+                                </p>
+                            </div>
+                            <div>
+                                <strong>Jadwal:</strong>
+                                <p id="mus3Schedule" class="text-gray-600">
+                                    24 Jam (Mukim), Kajian: 19.30-21.00 & 04.00-05.30
+                                </p>
+                                <button onclick="editContent('mus3Schedule')" class="admin-only text-xs bg-blue-500 text-white px-2 py-1 rounded mt-1">
+                    Edit
+                  </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section id="registrationSection" class="section-content hidden">
+        <div class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h2 class="text-4xl font-bold text-center text-green-800 mb-12">
+                    Formulir Pendaftaran Santri
+                </h2>
+
+                <form id="registrationForm" class="bg-white p-8 rounded-lg shadow-lg">
+                    <!-- Data Santri -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-green-800 mb-4 border-b pb-2">
+                            Data Santri
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Santri *</label
+                  >
+                  <input
+                    type="text"
+                    name="namaSantri"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Jenjang Pendidikan *</label
+                  >
+                  <select
+                    name="jenjangPendidikan"
+                    required
+                    onchange="handleJenjangChange(this)"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Jenjang</option>
+                    <option value="ra alquran">RA Al-Quran</option>
+                    <option value="mi maarif">MI Maarif</option>
+                    <option value="mts maarif">MTs Maarif</option>
+                    <option value="sma maarif">SMA Maarif</option>
+                    <option value="hanya mondok">Hanya Mondok</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Mukim/Tidak Mukim *</label
+                  >
+                  <select
+                    name="statusMukim"
+                    required
+                    onchange="handleMukimChange(this)"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Status</option>
+                    <option value="mukim">Mukim</option>
+                    <option value="tidak mukim">Tidak Mukim</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Unit Pesantren</label
+                  >
+                  <select
+                    name="unitPesantren"
+                    id="unitPesantren"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Unit</option>
+                    <option value="mus roudlotussolihin">
+                      MUS Roudlotussolihin
+                    </option>
+                    <option value="mus roudlotussolihin tahfid">
+                      MUS Roudlotussolihin Tahfidz
+                    </option>
+                    <option value="mus roudlotulmuttaqin">
+                      MUS Roudlotul Muttaqin
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >NIK *</label
+                  >
+                  <input
+                    type="text"
+                    name="nik"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >NISN</label
+                  >
+                  <input
+                    type="text"
+                    name="nisn"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Agama *</label
+                  >
+                  <select
+                    name="agama"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Agama</option>
+                    <option value="islam">Islam</option>
+                    <option value="kristen">Kristen</option>
+                    <option value="katolik">Katolik</option>
+                    <option value="hindu">Hindu</option>
+                    <option value="buddha">Buddha</option>
+                    <option value="konghucu">Konghucu</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Jenis Kelamin *</label
+                  >
+                  <select
+                    name="jenisKelamin"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="laki-laki">Laki-laki</option>
+                    <option value="perempuan">Perempuan</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tempat Lahir *</label
+                  >
+                  <input
+                    type="text"
+                    name="tempatLahir"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tanggal Lahir *</label
+                  >
+                  <input
+                    type="date"
+                    name="tanggalLahir"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Jumlah Saudara Kandung *</label
+                  >
+                  <input
+                    type="number"
+                    name="jumlahSaudara"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Anak Ke *</label
+                  >
+                  <input
+                    type="number"
+                    name="anakKe"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Nomor KK *</label
+                  >
+                  <input
+                    type="text"
+                    name="nomorKK"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Nama Kepala Keluarga *</label
+                  >
+                  <input
+                    type="text"
+                    name="namaKepalaKeluarga"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Ayah -->
+            <div class="mb-8">
+              <h3 class="text-xl font-bold text-green-800 mb-4 border-b pb-2">
+                Data Ayah
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Status Ayah Kandung *</label
+                  >
+                  <select
+                    name="statusAyah"
+                    required
+                    onchange="handleParentStatusChange('ayah', this)"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Status</option>
+                    <option value="hidup">Hidup</option>
+                    <option value="meninggal">Meninggal</option>
+                    <option value="tidak diketahui">Tidak Diketahui</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Nama Ayah Kandung *</label
+                  >
+                  <input
+                    type="text"
+                    name="namaAyah"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Agama Ayah *</label
+                  >
+                  <select
+                    name="agamaAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Agama</option>
+                    <option value="islam">Islam</option>
+                    <option value="kristen">Kristen</option>
+                    <option value="katolik">Katolik</option>
+                    <option value="hindu">Hindu</option>
+                    <option value="buddha">Buddha</option>
+                    <option value="konghucu">Konghucu</option>
+                  </select>
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >NIK Ayah *</label
+                  >
+                  <input
+                    type="text"
+                    name="nikAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tempat Lahir Ayah *</label
+                  >
+                  <input
+                    type="text"
+                    name="tempatLahirAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tanggal Lahir Ayah *</label
+                  >
+                  <input
+                    type="date"
+                    name="tanggalLahirAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Pekerjaan Ayah *</label
+                  >
+                  <input
+                    type="text"
+                    name="pekerjaanAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ayah-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Pendidikan Terakhir Ayah *</label
+                  >
+                  <select
+                    name="pendidikanAyah"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Pendidikan</option>
+                    <option value="sd">SD</option>
+                    <option value="smp">SMP</option>
+                    <option value="sma">SMA</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="s1">S1</option>
+                    <option value="s2">S2</option>
+                    <option value="s3">S3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Ibu -->
+            <div class="mb-8">
+              <h3 class="text-xl font-bold text-green-800 mb-4 border-b pb-2">
+                Data Ibu
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Status Ibu Kandung *</label
+                  >
+                  <select
+                    name="statusIbu"
+                    required
+                    onchange="handleParentStatusChange('ibu', this)"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Status</option>
+                    <option value="hidup">Hidup</option>
+                    <option value="meninggal">Meninggal</option>
+                    <option value="tidak diketahui">Tidak Diketahui</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Nama Ibu Kandung *</label
+                  >
+                  <input
+                    type="text"
+                    name="namaIbu"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Agama Ibu *</label
+                  >
+                  <select
+                    name="agamaIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Agama</option>
+                    <option value="islam">Islam</option>
+                    <option value="kristen">Kristen</option>
+                    <option value="katolik">Katolik</option>
+                    <option value="hindu">Hindu</option>
+                    <option value="buddha">Buddha</option>
+                    <option value="konghucu">Konghucu</option>
+                  </select>
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >NIK Ibu *</label
+                  >
+                  <input
+                    type="text"
+                    name="nikIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tempat Lahir Ibu *</label
+                  >
+                  <input
+                    type="text"
+                    name="tempatLahirIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tanggal Lahir Ibu *</label
+                  >
+                  <input
+                    type="date"
+                    name="tanggalLahirIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Pekerjaan Ibu *</label
+                  >
+                  <input
+                    type="text"
+                    name="pekerjaanIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div class="ibu-detail">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Pendidikan Terakhir Ibu *</label
+                  >
+                  <select
+                    name="pendidikanIbu"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih Pendidikan</option>
+                    <option value="sd">SD</option>
+                    <option value="smp">SMP</option>
+                    <option value="sma">SMA</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="s1">S1</option>
+                    <option value="s2">S2</option>
+                    <option value="s3">S3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Alamat -->
+            <div class="mb-8">
+              <h3 class="text-xl font-bold text-green-800 mb-4 border-b pb-2">
+                Data Alamat
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Alamat Rumah *</label
+                  >
+                  <textarea
+                    name="alamatRumah"
+                    required
+                    rows="3"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  ></textarea>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >RT/RW *</label
+                  >
+                  <input
+                    type="text"
+                    name="rtRw"
+                    required
+                    placeholder="001/002"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Desa/Kelurahan *</label
+                  >
+                  <input
+                    type="text"
+                    name="desaKelurahan"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Kecamatan *</label
+                  >
+                  <input
+                    type="text"
+                    name="kecamatan"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Kabupaten *</label
+                  >
+                  <input
+                    type="text"
+                    name="kabupaten"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Provinsi *</label
+                  >
+                  <input
+                    type="text"
+                    name="provinsi"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Kode Pos *</label
+                  >
+                  <input
+                    type="text"
+                    name="kodePos"
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Nomor HP (WhatsApp) *</label
+                  >
+                  <input
+                    type="tel"
+                    name="nomorHp"
+                    required
+                    placeholder="08xxxxxxxxxx"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button
+                type="submit"
+                class="bg-green-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-900 transition-colors pulse-green"
+              >
+                Daftar Sekarang
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="adminSection" class="section-content hidden">
+      <div class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+          <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-green-800">Panel Admin</h2>
+            <button
+              onclick="adminLogout()"
+              class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-lg font-semibold text-green-800 mb-2">
+                Total Pendaftar
+              </h3>
+              <p
+                class="text-3xl font-bold text-green-600"
+                id="totalRegistrants"
+              >
+                0
+              </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-lg font-semibold text-green-800 mb-2">
+                Pendaftar Hari Ini
+              </h3>
+              <p
+                class="text-3xl font-bold text-yellow-600"
+                id="todayRegistrants"
+              >
+                0
+              </p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-lg font-semibold text-green-800 mb-2">
+                Santri Mukim
+              </h3>
+              <p class="text-3xl font-bold text-blue-600" id="mukimCount">0</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-green-800">Data Pendaftar</h3>
+              <div class="space-x-2">
+                <button
+                  onclick="clearAllData()"
+                  class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                >
+                  Hapus Semua Data
+                </button>
+                <button
+                  onclick="downloadExcel()"
+                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                >
+                  Download Excel
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr class="bg-green-50">
+                    <th class="border border-gray-300 p-2 text-left">No</th>
+                    <th class="border border-gray-300 p-2 text-left">Nama</th>
+                    <th class="border border-gray-300 p-2 text-left">
+                      Jenjang
+                    </th>
+                    <th class="border border-gray-300 p-2 text-left">Status</th>
+                    <th class="border border-gray-300 p-2 text-left">Unit</th>
+                    <th class="border border-gray-300 p-2 text-left">
+                      Tanggal Daftar
+                    </th>
+                    <th class="border border-gray-300 p-2 text-left">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="registrantTable">
+                  <!-- Data will be populated here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Global variables
+      let currentSection = "home";
+      let isAdminMode = false;
+      let registrationData =
+        JSON.parse(localStorage.getItem("registrationData")) || [];
+
+      // Section management
+      function toggleSection(section) {
+        document
+          .querySelectorAll(".section-content")
+          .forEach((s) => s.classList.add("hidden"));
+        document.getElementById(section + "Section").classList.remove("hidden");
+        currentSection = section;
+
+        if (section === "admin" && isAdminMode) {
+          updateAdminStats();
+          populateRegistrantTable();
+        }
+      }
+
+      // Admin functions
+      function showAdminLogin() {
+        document.getElementById("adminLoginModal").classList.remove("hidden");
+      }
+
+      function closeAdminLogin() {
+        document.getElementById("adminLoginModal").classList.add("hidden");
+        document.getElementById("adminUsername").value = "";
+        document.getElementById("adminPassword").value = "";
+      }
+
+      function adminLogin() {
+        const username = document.getElementById("adminUsername").value;
+        const password = document.getElementById("adminPassword").value;
+
+        if (username === "admin" && password === "roudlotussolihin2024") {
+          isAdminMode = true;
+          document.body.classList.add("admin-mode");
+          closeAdminLogin();
+          toggleSection("admin");
+          alert("Login berhasil! Selamat datang Admin.");
+        } else {
+          alert("Username atau password salah!");
+        }
+      }
+
+      function adminLogout() {
+        isAdminMode = false;
+        document.body.classList.remove("admin-mode");
+        toggleSection("home");
+        alert("Logout berhasil!");
+      }
+
+      // Form handling
+      function handleJenjangChange(select) {
+        const unitSelect = document.getElementById("unitPesantren");
+        const mukimSelect = document.querySelector(
+          'select[name="statusMukim"]'
+        );
+
+        if (select.value === "hanya mondok") {
+          mukimSelect.value = "mukim";
+          mukimSelect.disabled = true;
+          unitSelect.required = true;
+        } else {
+          mukimSelect.disabled = false;
+          if (mukimSelect.value === "tidak mukim") {
+            unitSelect.value = "";
+            unitSelect.disabled = true;
+            unitSelect.required = false;
+          }
+        }
+      }
+
+      function handleMukimChange(select) {
+        const unitSelect = document.getElementById("unitPesantren");
+        const jenjangSelect = document.querySelector(
+          'select[name="jenjangPendidikan"]'
+        );
+
+        if (select.value === "tidak mukim") {
+          unitSelect.value = "";
+          unitSelect.disabled = true;
+          unitSelect.required = false;
+        } else if (jenjangSelect.value !== "hanya mondok") {
+          unitSelect.disabled = false;
+          unitSelect.required = false;
+        }
+      }
+
+      function handleParentStatusChange(parent, select) {
+        const details = document.querySelectorAll(`.${parent}-detail`);
+        const isRequired = select.value === "hidup";
+
+        details.forEach((detail) => {
+          const input = detail.querySelector("input, select");
+          if (input) {
+            input.required = isRequired;
+            if (!isRequired) {
+              input.value = "";
+            }
+          }
+        });
+      }
+
+      // Registration form submission
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const data = {};
+
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+
+          data.tanggalDaftar = new Date().toISOString().split("T")[0];
+          data.id = Date.now();
+
+          registrationData.push(data);
+          localStorage.setItem(
+            "registrationData",
+            JSON.stringify(registrationData)
+          );
+
+          alert(
+            "Pendaftaran berhasil! Terima kasih telah mendaftar di Yayasan Roudlotussolihin."
+          );
+          this.reset();
+        });
+
+      // Admin stats and table
+      function updateAdminStats() {
+        const total = registrationData.length;
+        const today = new Date().toISOString().split("T")[0];
+        const todayCount = registrationData.filter(
+          (r) => r.tanggalDaftar === today
+        ).length;
+        const mukimCount = registrationData.filter(
+          (r) => r.statusMukim === "mukim"
+        ).length;
+
+        document.getElementById("totalRegistrants").textContent = total;
+        document.getElementById("todayRegistrants").textContent = todayCount;
+        document.getElementById("mukimCount").textContent = mukimCount;
+      }
+
+      function populateRegistrantTable() {
+        const tbody = document.getElementById("registrantTable");
+        tbody.innerHTML = "";
+
+        registrationData.forEach((data, index) => {
+          const row = tbody.insertRow();
+          row.innerHTML = `
+                    <td class="border border-gray-300 p-2">${index + 1}</td>
+                    <td class="border border-gray-300 p-2">${
+                      data.namaSantri
+                    }</td>
+                    <td class="border border-gray-300 p-2">${
+                      data.jenjangPendidikan
+                    }</td>
+                    <td class="border border-gray-300 p-2">${
+                      data.statusMukim
+                    }</td>
+                    <td class="border border-gray-300 p-2">${
+                      data.unitPesantren || "-"
+                    }</td>
+                    <td class="border border-gray-300 p-2">${
+                      data.tanggalDaftar
+                    }</td>
+                    <td class="border border-gray-300 p-2">
+                        <button onclick="viewRegistrant(${
+                          data.id
+                        })" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600 mr-1">
+                            Lihat
+                        </button>
+                        <button onclick="deleteRegistrant(${
+                          data.id
+                        })" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">
+                            Hapus
+                        </button>
+                    </td>
+                `;
+        });
+      }
+
+      // Excel download
+      function downloadExcel() {
+        if (registrationData.length === 0) {
+          alert("Tidak ada data untuk didownload!");
+          return;
+        }
+
+        const ws = XLSX.utils.json_to_sheet(registrationData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data Santri");
+
+        const filename = `data_santri_${
+          new Date().toISOString().split("T")[0]
+        }.xlsx`;
+        XLSX.writeFile(wb, filename);
+      }
+
+      // Delete registrant
+      function deleteRegistrant(id) {
+        const registrant = registrationData.find((r) => r.id === id);
+        if (!registrant) {
+          alert("Data tidak ditemukan!");
+          return;
+        }
+
+        if (
+          confirm(
+            `Apakah Anda yakin ingin menghapus data pendaftar "${registrant.namaSantri}"?\n\nData yang dihapus tidak dapat dikembalikan.`
+          )
+        ) {
+          registrationData = registrationData.filter((r) => r.id !== id);
+          localStorage.setItem(
+            "registrationData",
+            JSON.stringify(registrationData)
+          );
+
+          updateAdminStats();
+          populateRegistrantTable();
+
+          alert("Data berhasil dihapus!");
+        }
+      }
+
+      // View registrant details
+      function viewRegistrant(id) {
+        const registrant = registrationData.find((r) => r.id === id);
+        if (!registrant) {
+          alert("Data tidak ditemukan!");
+          return;
+        }
+
+        const details = `
+DETAIL DATA PENDAFTAR
+
+=== DATA SANTRI ===
+Nama: ${registrant.namaSantri}
+Jenjang: ${registrant.jenjangPendidikan}
+Status: ${registrant.statusMukim}
+Unit Pesantren: ${registrant.unitPesantren || "-"}
+NIK: ${registrant.nik}
+NISN: ${registrant.nisn || "-"}
+Agama: ${registrant.agama}
+Jenis Kelamin: ${registrant.jenisKelamin}
+Tempat, Tanggal Lahir: ${registrant.tempatLahir}, ${registrant.tanggalLahir}
+Anak ke-${registrant.anakKe} dari ${registrant.jumlahSaudara} bersaudara
+No. KK: ${registrant.nomorKK}
+Kepala Keluarga: ${registrant.namaKepalaKeluarga}
+
+=== DATA AYAH ===
+Status: ${registrant.statusAyah}
+Nama: ${registrant.namaAyah}
+${
+  registrant.statusAyah === "hidup"
+    ? `Agama: ${registrant.agamaAyah || "-"}
+NIK: ${registrant.nikAyah || "-"}
+Tempat, Tanggal Lahir: ${registrant.tempatLahirAyah || "-"}, ${
+        registrant.tanggalLahirAyah || "-"
+      }
+Pekerjaan: ${registrant.pekerjaanAyah || "-"}
+Pendidikan: ${registrant.pendidikanAyah || "-"}`
+    : ""
+}
+
+=== DATA IBU ===
+Status: ${registrant.statusIbu}
+Nama: ${registrant.namaIbu}
+${
+  registrant.statusIbu === "hidup"
+    ? `Agama: ${registrant.agamaIbu || "-"}
+NIK: ${registrant.nikIbu || "-"}
+Tempat, Tanggal Lahir: ${registrant.tempatLahirIbu || "-"}, ${
+        registrant.tanggalLahirIbu || "-"
+      }
+Pekerjaan: ${registrant.pekerjaanIbu || "-"}
+Pendidikan: ${registrant.pendidikanIbu || "-"}`
+    : ""
+}
+
+=== DATA ALAMAT ===
+Alamat: ${registrant.alamatRumah}
+RT/RW: ${registrant.rtRw}
+Desa/Kelurahan: ${registrant.desaKelurahan}
+Kecamatan: ${registrant.kecamatan}
+Kabupaten: ${registrant.kabupaten}
+Provinsi: ${registrant.provinsi}
+Kode Pos: ${registrant.kodePos}
+No. HP: ${registrant.nomorHp}
+
+Tanggal Daftar: ${registrant.tanggalDaftar}
+            `;
+
+        alert(details);
+      }
+
+      // Clear all registration data
+      function clearAllData() {
+        if (registrationData.length === 0) {
+          alert("Tidak ada data untuk dihapus!");
+          return;
+        }
+
+        if (
+          confirm(
+            `Apakah Anda yakin ingin menghapus SEMUA data pendaftar (${registrationData.length} data)?\n\nTindakan ini tidak dapat dibatalkan!`
+          )
+        ) {
+          if (confirm("Konfirmasi sekali lagi: Hapus SEMUA data pendaftar?")) {
+            registrationData = [];
+            localStorage.setItem(
+              "registrationData",
+              JSON.stringify(registrationData)
+            );
+
+            updateAdminStats();
+            populateRegistrantTable();
+
+            alert("Semua data berhasil dihapus!");
+          }
+        }
+      }
+
+      // Content editing
+      function editContent(elementId) {
+        const element = document.getElementById(elementId);
+        const currentContent = element.innerHTML;
+        const newContent = prompt(
+          "Edit konten:",
+          currentContent.replace(/<[^>]*>/g, "")
+        );
+
+        if (newContent !== null) {
+          element.innerHTML = newContent;
+          localStorage.setItem(elementId, newContent);
+        }
+      }
+
+      // Photo management
+      function updatePhoto(photoId, input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById(photoId + "Photo");
+            const initial = document.getElementById(photoId + "Initial");
+
+            img.src = e.target.result;
+            img.classList.remove("hidden");
+            initial.style.display = "none";
+
+            localStorage.setItem(photoId + "Photo", e.target.result);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function updateGallery(galleryId, input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById(galleryId);
+            const text = document.getElementById(galleryId + "Text");
+
+            img.src = e.target.result;
+            img.classList.remove("hidden");
+            text.style.display = "none";
+
+            localStorage.setItem(galleryId, e.target.result);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      // Load saved content on page load
+      window.addEventListener("load", function () {
+        // Load saved text content
+        const textElements = [
+          "visionText",
+          "missionText",
+          "addressText",
+          "raProgram",
+          "raSchedule",
+          "miProgram",
+          "miSubjects",
+          "miSchedule",
+          "mtsProgram",
+          "mtsSubjects",
+          "mtsSchedule",
+          "smaProgram",
+          "smaSubjects",
+          "smaSchedule",
+          "mus1Program",
+          "mus1Subjects",
+          "mus1Schedule",
+          "mus2Program",
+          "mus2Subjects",
+          "mus2Schedule",
+          "mus3Program",
+          "mus3Subjects",
+          "mus3Schedule",
+        ];
+
+        textElements.forEach((elementId) => {
+          const saved = localStorage.getItem(elementId);
+          if (saved) {
+            document.getElementById(elementId).innerHTML = saved;
+          }
+        });
+
+        // Load saved photos
+        const photoIds = [
+          "founder",
+          "chairman",
+          "raHead",
+          "miHead",
+          "mtsHead",
+          "smaHead",
+          "mudir1",
+          "mudir2",
+          "mudir3",
+        ];
+        photoIds.forEach((photoId) => {
+          const saved = localStorage.getItem(photoId + "Photo");
+          if (saved) {
+            const img = document.getElementById(photoId + "Photo");
+            const initial = document.getElementById(photoId + "Initial");
+
+            img.src = saved;
+            img.classList.remove("hidden");
+            initial.style.display = "none";
+          }
+        });
+
+        // Load saved gallery
+        const galleryIds = ["gallery1", "gallery2", "gallery3", "gallery4"];
+        galleryIds.forEach((galleryId) => {
+          const saved = localStorage.getItem(galleryId);
+          if (saved) {
+            const img = document.getElementById(galleryId);
+            const text = document.getElementById(galleryId + "Text");
+
+            img.src = saved;
+            img.classList.remove("hidden");
+            text.style.display = "none";
+          }
+        });
+      });
+
+      // Initialize page
+      toggleSection("home");
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'963bc37a26526494',t:'MTc1MzI3OTg1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
+<img src="" alt="" srcset="" />
+<!-- Footer -->
+<footer class="bg-green-800 text-white py-12">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <div class="flex items-center space-x-3 mb-4">
+          <div
+            class="w-12 h-12 bg-white rounded-full flex items-center justify-center"
+          >
+            <img src="ypp.png" alt="Logo" class="w-10 h-10 object-contain" />
+          </div>
+          <div>
+            <h3 class="text-xl font-bold">Roudlotussolihin</h3>
+            <p class="text-green-200">Yayasan Pendidikan Terpadu</p>
+          </div>
+        </div>
+        <p class="text-green-100">
+          Mengawal dan mencetak generasi bangsa yang beriman, berakhlakul karimah, cerdas dan berbudaya
+        </p>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4">Kontak</h4>
+        <div class="space-y-2 text-green-100">
+          <p>📍 Jl.KH. Sofyan Tsauri KM 18, Desa Bumirestu, Kecamatan Palas, Kabupaten Lampung Selatan, Provinsi Lampung, 35594 </p>
+          <p>📞 +62 821-8004-8861</p>
+          <p>✉ yppproudlotussolihin@gmail.com</p>
+        </div>
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold mb-4">Unit Lembaga</h4>
+        <div class="space-y-1 text-green-100 text-sm">
+          <p>• Pondok Pesantren MUS Rudlotussolihin</p>
+          <p>• Pondok Pesantren MUS Roudlotussolihin Tahfid</p>
+          <p>• Pondok Pesantren MUS Roudlotul Muttaqin</p>
+          <p>• RA Alquran Roudlotussolihin</p>
+          <p>• MI MAARIF Bumirestu</p>
+          <p>• MTs MAARIF Bumirestu</p>
+          <p>• SMA MAARIF Bumirestu</p>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-green-700 mt-8 pt-8 text-center text-green-200">
+      <p>&copy; 2025 FAUZI Creative Studio. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+</footer>
+</footer>
