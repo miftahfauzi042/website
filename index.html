@@ -85,39 +85,76 @@
 </head>
 
 <body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <img src="ypp.png" alt="Logo" class="w-10 h-10 object-contain" />
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold">
-                            Yayasan Pendidikan Pondok Pesantren Roudlotussolihin
-                        </h1>
-                        <p class="text-sm opacity-90">Pendidikan Islam Terpadu</p>
-                    </div>
+   <!-- Navigation -->
+<nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                    <img src="ypp.png" alt="Logo" class="w-10 h-10 object-contain" />
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button onclick="toggleSection('home')" class="hover:text-yellow-300 transition-colors">
-              Beranda
-            </button>
-                    <button onclick="toggleSection('institutions')" class="hover:text-yellow-300 transition-colors">
-              Lembaga
-            </button>
-                    <button onclick="toggleSection('registration')" class="hover:text-yellow-300 transition-colors">
-              Pendaftaran
-            </button>
-                    <button onclick="showAdminLogin()" class="hover:text-yellow-300 transition-colors">
-              Admin
-            </button>
+                <div>
+                    <h1 class="text-xl font-bold">Yayasan Roudlotussolihin</h1>
+                    <p class="text-sm opacity-90">Pendidikan Islam Terpadu</p>
                 </div>
             </div>
-        </div>
-    </nav>
 
+            <!-- Hamburger button (mobile) -->
+            <button id="menu-btn" class="sm:hidden focus:outline-none" onclick="toggleMenu()">
+                <!-- Hamburger icon -->
+                <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 block" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <!-- Close (X) icon -->
+                <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 hidden" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Menu Desktop -->
+            <div id="navbar-menu" class="hidden sm:flex items-center space-x-4">
+                <button onclick="toggleSection('home')" class="hover:text-yellow-300 transition-colors">Beranda</button>
+                <button onclick="toggleSection('institutions')" class="hover:text-yellow-300 transition-colors">Lembaga</button>
+                <button onclick="toggleSection('registration')" class="hover:text-yellow-300 transition-colors">Pendaftaran</button>
+                <button onclick="showAdminLogin()" class="hover:text-yellow-300 transition-colors">Admin</button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (animated) -->
+        <div id="mobile-menu" class="max-h-0 overflow-hidden transition-all duration-300 sm:hidden flex flex-col space-y-2">
+            <button onclick="toggleSection('home')" class="hover:text-yellow-300 transition-colors">Beranda</button>
+            <button onclick="toggleSection('institutions')" class="hover:text-yellow-300 transition-colors">Lembaga</button>
+            <button onclick="toggleSection('registration')" class="hover:text-yellow-300 transition-colors">Pendaftaran</button>
+            <button onclick="showAdminLogin()" class="hover:text-yellow-300 transition-colors">Admin</button>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const iconHamburger = document.getElementById('icon-hamburger');
+        const iconClose = document.getElementById('icon-close');
+
+        // Toggle slide-down
+        if (menu.classList.contains('max-h-0')) {
+            menu.classList.remove('max-h-0');
+            menu.classList.add('max-h-96', 'py-2');
+            iconHamburger.classList.add('hidden');
+            iconClose.classList.remove('hidden');
+        } else {
+            menu.classList.add('max-h-0');
+            menu.classList.remove('max-h-96', 'py-2');
+            iconHamburger.classList.remove('hidden');
+            iconClose.classList.add('hidden');
+        }
+    }
+</script>
     <!-- Admin Login Modal -->
     <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
@@ -2007,4 +2044,5 @@ Tanggal Daftar: ${registrant.tanggalDaftar}
 </footer>
 
 </footer>
+
 
